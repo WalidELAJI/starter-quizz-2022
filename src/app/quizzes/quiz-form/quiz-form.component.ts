@@ -19,11 +19,16 @@ export class QuizFormComponent implements OnInit {
    * More information about Reactive Forms: https://angular.io/guide/reactive-forms#step-1-creating-a-formgroup-instance
    */
   public quizForm: FormGroup;
+  public THEMES_LIST:string[] = ['Sports','Actors','Music'];
+
+
 
   constructor(public formBuilder: FormBuilder, public quizService: QuizService) {
     // Form creation
     this.quizForm = this.formBuilder.group({
-      name: ['']
+      name: [''],
+      theme: [''],
+      creationDate:['']
     });
     // You can also add validators to your inputs such as required, maxlength or even create your own validator!
     // More information: https://angular.io/guide/reactive-forms#simple-form-validation
@@ -34,15 +39,21 @@ export class QuizFormComponent implements OnInit {
   }
 
   addQuiz() {
-    // We retrieve here the quiz object from the quizForm and we cast the type "as Quiz".
-    // const quizToCreate: Quiz = this.quizForm.getRawValue() as Quiz;
+    const name = this.quizForm?.get('name')?.value;
+    const theme = this.quizForm?.get('theme')?.value;
+    const creationDate = this.quizForm?.get('creationDate')?.value;
 
-    // Do you need to log your object here in your class? Uncomment the code below
-    // and open your console in your browser by pressing F12 and choose the tab "Console".
-    // You will see your quiz object when you click on the create button.
-    // console.log('Add quiz: ', quizToCreate);
+    if (name !== undefined && theme !== undefined && creationDate !== undefined) {
+      const quizToCreate: Quiz = {
+        name: name,
+        theme: theme,
+        creationDate: creationDate,
+        questions: []
+      };
 
-    // Now, add your quiz in the list!
+      this.quizService.addQuiz(quizToCreate);
+    } else {
+      console.error("Une ou plusieurs valeurs du formulaire sont indéfinies.");
+    }
   }
-
 }
